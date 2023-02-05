@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container w-50 mt-5">
+    <button onclick = "Openform()" class="btn btn-primary" id="button">Fill Form</button>
+    <a href="{% url 'logout' %}"><button  class="btn btn-danger" id="button">LogOut</button></a>
+</div>
+<div class="container w-50 bg-light" id="cont">
+    {% for message in messages %}
+    <h5>
+        <div class="'text-danger mt-5 " style="width:100%;font-size: 20px;">
+            {{ message }}
+        </div>
+    </h5> 
+        {% endfor %}   
+</div>
+
+<div class="container w-50 mb-5" style="background-color: aqua;">
+    
+    <div id="form1" style = "display:none;" class=" mt-5">
+        <form  method="POST" id="indexform" data-courses-url="{% url 'load-courses' %}" action="{% url 'details' %}" class="mt-5">
+            {% csrf_token %}
+            <h2 class="text-center mt-5">Student Details</h2>
+            <b><label for="">Enter Your Name:</label></b>
+            <input type="text" class="form-control" placeholder="Enter Your Name" name="name"><br>
+            <b><label for="">Enter Your Date of Birth</label></b>
+            <input type="date" class="form-control" name="dob"><br>
+            <b><label for="">Enter Your Age</label></b>
+            <input type="number" name="age" class='form-control' placeholder="Enter Age"><br>
+            <b><label for="">Enter Gender</label></b>
+            <select name="gender" class="form-control" required> 
+                <option value=""> Select </option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                </select> <br>
+            <b><label for="">Enter Your Number</label>    </b>
+            <input type="number" name="phone" class='form-control' placeholder="Enter Phone Number"><br>  
+            <b><label for="">Enter Your Email</label></b>
+            <input type="email" name="email" class='form-control' placeholder="Enter Your email"><br>
+            <b><label for="">Enter Your Address</label></b>
+            <input type="text" name="Address" class='form-control' placeholder="Enter Your Address"><br> 
+            <b><label for="">Specify Your Department</label></b>
+            <select name="dept" class="form-control" required id="department"> 
+                <option value="">--Select Department--</option>
+                {% for department in departments %}
+                <option value="{{department.id}}">{{department.dept_name}}</option>
+                {% endfor %}
+            </select> <br>
+            <b><label for="">Specify Your Course</label></b>
+            <select name="course" class="form-control" required id="courses"> 
+                <option value="">--Select Course--</option>
+            </select> <br>
+            <b><label for="">Mention Your Purpose</label></b>
+            <select name="purpose" class="form-control" required> 
+                <option value="">--Select your Purpose--</option>
+                <option value="Enquiry">Enquiry</option>
+                <option value="Place Order">Place Order</option>
+                <option value="Return">Return</option>
+            </select><br>
+            <b><label for="">Materials Provide</label><br></b>
+            <input type="checkbox" id="" name="notebook" value="Notebook"/>    
+                 <label>NoteBook</label> <br>    
+              <input type="checkbox" id="" name="pen" value="Pen"/>    
+                 <label>Pen</label> <br>    
+              <input type="checkbox" id="" name="exam Pappers" value="Exam Pappers"/>    
+                 <label>Exam Pappers</label> <br>  
+            <button class="btn btn-primary mt-5 mb-5" style="margin-left: 45%;">
+                <span class="button__text">Submit</span>
+                <i class="button__icon fas fa-chevron-right"></i>
+            </button>		
+        </form>
+    </div>
+</div>
+<script>
+</script>
+<script>
+    function Openform()
+{
+    document.getElementById('form1').style.display = '';
+    document.getElementById('button').style.display='none'
+    document.getElementById('cont').style.display='none'
+}
+</script>
+<script
+  src="https://code.jquery.com/jquery-3.6.3.min.js"
+  integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
+  crossorigin="anonymous"></script>
+<script>
+    $('#department').change(function(){
+        var url = $('#indexform').attr('data-courses-url');
+        var department_id = $(this).val();
+
+        $.ajax({
+            url:url,
+            data:{
+                'department':department_id
+            },
+            success:function(data){
+                $('#courses').html(data)
+            }
+        })
+    });
+</script>
+{% endblock %}
